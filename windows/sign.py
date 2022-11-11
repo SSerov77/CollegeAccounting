@@ -46,7 +46,6 @@ class Sign(QMainWindow, Ui_Sign):
                 QMessageBox.about(self, "Ошибка", "Введен неправильно логин или пароль")
 
 
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = Sign()
