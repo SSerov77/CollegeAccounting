@@ -27,23 +27,27 @@ class Sign(QMainWindow, Ui_Sign):
         results_login_passw = []
         login = self.lineEdit_sign_login.text()
         password = self.lineEdit_sign_password.text()
-        if login == "admin" and password == "admin":
-            self.open = admin.Admin()
-            self.open.show()
-            self.close()
-        else:
-            result = self.cur.execute('''SELECT login, password FROM teachers''').fetchall()
-            for i in result:
-                results_login_passw.append(i)
-            total = (login, password)
-            if total in results_login_passw:
-                name = self.cur.execute(f"SELECT name FROM teachers WHERE login='{login}'").fetchall()[0]
-                self.open = teacher.Teacher(name)
+        if login != '' or password != '':
+            if login == "admin" and password == "admin":
+                self.open = admin.Admin()
                 self.open.show()
-                self.show()
                 self.close()
             else:
-                QMessageBox.about(self, "Ошибка", "Введен неправильно логин или пароль")
+                result = self.cur.execute('''SELECT login, password FROM teachers''').fetchall()
+                for i in result:
+                    results_login_passw.append(i)
+                total = (login, password)
+                if total in results_login_passw:
+                    name = self.cur.execute(f"SELECT name FROM teachers WHERE login='{login}'").fetchall()[0]
+                    self.open = teacher.Teacher(name)
+                    self.open.show()
+                    self.show()
+                    self.close()
+                else:
+                    QMessageBox.about(self, "Ошибка", "Введен неправильно логин или пароль")
+        else:
+            QMessageBox.about(self, "Ошибка", "Введите логин или пароль")
+
 
 
 if __name__ == '__main__':

@@ -4,6 +4,7 @@ import sqlite3
 from PyQt5.QtWidgets import QApplication, QMessageBox, QMainWindow
 
 from ui_py_files.AdminWindow import Ui_Admin
+from windows import sign
 
 
 class Admin(QMainWindow, Ui_Admin):
@@ -16,6 +17,10 @@ class Admin(QMainWindow, Ui_Admin):
             self.cur = self.conn.cursor()
 
             self.pushButton.clicked.connect(self.registration)
+            self.pushButton_back.clicked.connect(self.back)
+            self.bad_simbols = ['"', "'", '/', ';', ':', '&', '?', '!', '@', '#', '№', '$', '%', '^', '*', '(', ')',
+                                '[',
+                                ']', '{', '}', '>', '<', '`', '~', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '=', '+', '-', '_']
 
         except Exception:
             QMessageBox.about(self, "Ошибка", "Произошла ошибка!")
@@ -23,12 +28,23 @@ class Admin(QMainWindow, Ui_Admin):
     def registration(self):
         logins = []
         errors = True
+        errors_2 = False
         first_name = self.lineEdit_firstname.text().replace(" ", "").capitalize()
         last_name = self.lineEdit_lastname.text().replace(" ", "").capitalize()
         third_name = self.lineEdit_thirdname.text().replace(" ", "").capitalize()
         login = self.lineEdit_login.text().replace(" ", "")
         password = self.lineEdit_password.text()
         password2 = self.lineEdit_password2.text()
+
+        for i in first_name:
+            if i in self.bad_simbols:
+                errors_2 = True
+        for i in last_name:
+            if i in self.bad_simbols:
+                errors_2 = True
+        for i in third_name:
+            if i in self.bad_simbols:
+                errors_2 = True
 
         result = self.cur.execute("SELECT login FROM teachers").fetchall()
         for i in result:
@@ -40,6 +56,8 @@ class Admin(QMainWindow, Ui_Admin):
             QMessageBox.about(self, "Ошибка", "Такой логин уже существует")
         elif password2 != password:
             QMessageBox.about(self, "Ошибка", "Пароли не совпадают")
+        elif errors_2:
+            QMessageBox.about(self, "Ошибка", "В фамилии, имени или отчестве присутствуют запрещенные символы")
         else:
             errors = False
 
@@ -56,6 +74,11 @@ class Admin(QMainWindow, Ui_Admin):
             self.lineEdit_login.setText('')
             self.lineEdit_password.setText('')
             self.lineEdit_password2.setText('')
+
+    def back(self):
+        self.open = sign.Sign()
+        self.open.show()
+        self.close()
 
 
 if __name__ == '__main__':
