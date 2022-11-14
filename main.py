@@ -1,6 +1,7 @@
 # подключение библиотек
 import sys
 
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QMessageBox, QMainWindow
 
 from ui_py_files.HomeWindow import Ui_Login
@@ -14,6 +15,9 @@ class Window(QMainWindow, Ui_Login):
 
             self.setupUi(self)
             self.enter_to_account.clicked.connect(self.sign_in)
+
+            pixmap = QPixmap('images/Безымянный.png')
+            self.label_icon.setPixmap(pixmap)
 
         except Exception:
             QMessageBox.about(self, "Ошибка", "Извините, возможно произошла ошибка")
@@ -30,5 +34,7 @@ class Window(QMainWindow, Ui_Login):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = Window()
+    with open("css/styles.css", "r") as file:
+        app.setStyleSheet(file.read())
     ex.show()
     sys.exit(app.exec())

@@ -48,10 +48,11 @@ class AddSchedule(QMainWindow, Ui_Add_schedule):
             if not_error:
 
                 total = [teacher, monday, tuesday, wednesday, thursday, friday, saturday, sunday]
-
+                print(total)
                 self.cur.execute(
                     "INSERT INTO schedule(teacher, monday, tuesday, wednesday, thursday, friday, saturday, sunday) VALUES(?, ?, ?, ?, ?, ?, ?, ?);",
                     total)
+                print(1)
                 self.conn.commit()
 
                 self.lineEdit.setText('')

@@ -33,7 +33,7 @@ class Teacher(QMainWindow, Ui_TeacherWindow):
         try:
             if self.tabWidget.currentIndex() == 0:
                 res = self.cur.execute(
-                    f"SELECT id, name, groups FROM students WHERE teacher='{str(self.name[0])}'").fetchall()
+                    f"SELECT id, name, groups FROM students WHERE teacher='{str(self.name)}'").fetchall()
                 self.tableWidget.setColumnCount(3)
 
                 for i in range(3):
@@ -42,11 +42,11 @@ class Teacher(QMainWindow, Ui_TeacherWindow):
                     ['Номер', 'ФИО', 'Группа'])
 
                 rowcount = \
-                    self.cur.execute(f"SELECT COUNT(*) FROM students WHERE teacher='{str(self.name[0])}'").fetchone()[0]
+                    self.cur.execute(f"SELECT COUNT(*) FROM students WHERE teacher='{str(self.name)}'").fetchone()[0]
                 self.db_res(res, rowcount)
             else:
                 res = self.cur.execute(
-                    f"SELECT monday, tuesday, wednesday, thursday, friday, saturday, sunday FROM schedule WHERE teacher='{str(self.name[0])}'").fetchall()
+                    f"SELECT monday, tuesday, wednesday, thursday, friday, saturday, sunday FROM schedule WHERE teacher='{str(self.name)}'").fetchall()
                 self.tableWidget_2.setColumnCount(7)
 
                 for i in range(7):
@@ -55,8 +55,9 @@ class Teacher(QMainWindow, Ui_TeacherWindow):
                     ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'])
 
                 rowcount = \
-                    self.cur.execute(f"SELECT COUNT(*) FROM schedule WHERE teacher='{str(self.name[0])}'").fetchone()[0]
+                    self.cur.execute(f"SELECT COUNT(*) FROM schedule WHERE teacher='{str(self.name)}'").fetchone()[0]
                 self.db_res2(res, rowcount)
+            print(str(self.name))
         except Exception:
             QMessageBox.about(self, "Ошибка", "Извините, возможно произошла ошибка")
 

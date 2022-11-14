@@ -63,7 +63,7 @@ class HeadTeacher(QMainWindow, Ui_HeadTeacherWindow):
                 for i in range(3):
                     self.tableWidget.setColumnWidth(i, 347)  # постороения таблицы
                 self.tableWidget.setHorizontalHeaderLabels(
-                    ['Номер', 'ФИО'])
+                    ['Номер', 'Группа'])
 
                 rowcount = \
                     self.cur.execute(f"SELECT COUNT(*) FROM groups").fetchone()[0]
@@ -85,7 +85,7 @@ class HeadTeacher(QMainWindow, Ui_HeadTeacherWindow):
 
             elif self.tabWidget.currentIndex() == 2:
                 res = self.cur.execute(
-                    f"SELECT id, name FROM teachers").fetchall()
+                    f"SELECT id, name FROM teachers WHERE job='Преподаватель'").fetchall()
                 self.tableWidget_3.setColumnCount(2)
 
                 for i in range(2):
@@ -94,7 +94,7 @@ class HeadTeacher(QMainWindow, Ui_HeadTeacherWindow):
                     ['Номер', 'ФИО'])
 
                 rowcount = \
-                    self.cur.execute(f"SELECT COUNT(*) FROM teachers").fetchone()[0]
+                    self.cur.execute(f"SELECT COUNT(*) FROM teachers WHERE job='Преподаватель'").fetchone()[0]
                 self.db_res(res, rowcount, 3)
 
             elif self.tabWidget.currentIndex() == 3:
@@ -253,7 +253,29 @@ class HeadTeacher(QMainWindow, Ui_HeadTeacherWindow):
                 select = 'name'
                 fro_m = 'teachers'
                 text = self.lineEdit_teachers.text()  # введёный текст
-                self.to_find_help(select, fro_m, text)
+                result = self.cur.execute(f"SELECT name FROM teachers WHERE job='Преподаватель'").fetchall()
+                prod = []
+
+                # обработка полученных данных
+                for i in result:
+                    prod.append(i[0])
+
+                # основная часть функции - поиск
+                if text in prod or text == '':
+                    if text in prod or text == '':
+                        if text != '':
+                            res = self.cur.execute(
+                                f"SELECT * FROM teachers WHERE name='{text}' AND job='Преподаватель'").fetchall()
+                            rowcount = self.cur.execute(
+                                f"SELECT COUNT(*) FROM teachers WHERE name='{text}' AND job='Преподаватель'").fetchone()[
+                                0]
+                        else:
+                            res = self.cur.execute(f"SELECT * FROM teachers WHERE job='Преподаватель'").fetchall()
+                            rowcount = self.cur.execute(f"SELECT COUNT(*) FROM teachers WHERE job='Преподаватель'").fetchone()[0]
+
+                        self.db_res(res, rowcount, 3)
+                else:
+                    QMessageBox.about(self, "Ошибка", "Ничего не найдено!")
 
             elif self.tabWidget.currentIndex() == 3:
                 text = self.lineEdit_students.text()  # введёный текст
@@ -321,10 +343,6 @@ class HeadTeacher(QMainWindow, Ui_HeadTeacherWindow):
                     self.db_res(res, rowcount, 1)
                 elif self.tabWidget.currentIndex() == 1:
                     self.db_res2(res, rowcount)
-                elif self.tabWidget.currentIndex() == 2:
-                    self.db_res(res, rowcount, 3)
-                elif self.tabWidget.currentIndex() == 3:
-                    self.db_res3(res, rowcount)
             else:
                 QMessageBox.about(self, "Ошибка", "Ничего не найдено!")
 
@@ -334,16 +352,16 @@ class HeadTeacher(QMainWindow, Ui_HeadTeacherWindow):
     def to_upload(self):
         try:
             if self.tabWidget.currentIndex() == 0:
-                text = 'groups.csv'
+                text = 'upload/groups.csv'
                 table = self.tableWidget
             elif self.tabWidget.currentIndex() == 1:
-                text = 'schedule.csv'
+                text = 'upload/schedule.csv'
                 table = self.tableWidget_2
             elif self.tabWidget.currentIndex() == 2:
-                text = 'teachers.csv'
+                text = 'upload/teachers.csv'
                 table = self.tableWidget_3
             elif self.tabWidget.currentIndex() == 3:
-                text = 'students.csv'
+                text = 'upload/students.csv'
                 table = self.tableWidget_4
 
             with open(text, 'w', newline='') as csvfile:
