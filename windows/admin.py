@@ -27,70 +27,79 @@ class Admin(QMainWindow, Ui_Admin):
                                 '=', '+', '-', '_']
 
         except Exception:
-            QMessageBox.about(self, "Ошибка", "Произошла ошибка!")
+            QMessageBox.about(self, "Ошибка", "Извините, возможно произошла ошибка")
 
     def jober(self):
-        radioBtn = self.sender()
-        self.job = radioBtn.text()
-        print(self.job)
-        self.errors_job = False
+        try:
+            radioBtn = self.sender()
+            self.job = radioBtn.text()
+            print(self.job)
+            self.errors_job = False
+        except Exception:
+            QMessageBox.about(self, "Ошибка", "Извините, возможно произошла ошибка")
 
     def registration(self):
-        logins = []
-        errors = True
-        errors_2 = False
-        first_name = self.lineEdit_firstname.text().replace(" ", "").capitalize()
-        last_name = self.lineEdit_lastname.text().replace(" ", "").capitalize()
-        third_name = self.lineEdit_thirdname.text().replace(" ", "").capitalize()
-        login = self.lineEdit_login.text().replace(" ", "")
-        password = self.lineEdit_password.text()
-        password2 = self.lineEdit_password2.text()
+        try:
+            logins = []
+            errors = True
+            errors_2 = False
+            first_name = self.lineEdit_firstname.text().replace(" ", "").capitalize()
+            last_name = self.lineEdit_lastname.text().replace(" ", "").capitalize()
+            third_name = self.lineEdit_thirdname.text().replace(" ", "").capitalize()
+            login = self.lineEdit_login.text().replace(" ", "")
+            password = self.lineEdit_password.text()
+            password2 = self.lineEdit_password2.text()
 
-        for i in first_name:
-            if i in self.bad_simbols:
-                errors_2 = True
-        for i in last_name:
-            if i in self.bad_simbols:
-                errors_2 = True
-        for i in third_name:
-            if i in self.bad_simbols:
-                errors_2 = True
+            for i in first_name:
+                if i in self.bad_simbols:
+                    errors_2 = True
+            for i in last_name:
+                if i in self.bad_simbols:
+                    errors_2 = True
+            for i in third_name:
+                if i in self.bad_simbols:
+                    errors_2 = True
 
-        result = self.cur.execute("SELECT login FROM teachers").fetchall()
-        for i in result:
-            logins.append(i[0])
+            result = self.cur.execute("SELECT login FROM teachers").fetchall()
+            for i in result:
+                logins.append(i[0])
 
-        print(self.errors_job)
-        if first_name == '' or last_name == '' or third_name == '' or login == '' or password == '' or password2 == '' or self.errors_job:
-            QMessageBox.about(self, "Ошибка", "Вы заполнили не все поля")
+            print(self.errors_job)
+            if first_name == '' or last_name == '' or third_name == '' or login == '' or password == '' or password2 == '' or self.errors_job:
+                QMessageBox.about(self, "Ошибка", "Вы заполнили не все поля")
 
-        elif (login in logins) or login == 'admin':
-            QMessageBox.about(self, "Ошибка", "Такой логин уже существует")
-        elif password2 != password:
-            QMessageBox.about(self, "Ошибка", "Пароли не совпадают")
-        elif errors_2:
-            QMessageBox.about(self, "Ошибка", "В фамилии, имени или отчестве присутствуют запрещенные символы")
-        else:
-            errors = False
+            elif (login in logins) or login == 'admin':
+                QMessageBox.about(self, "Ошибка", "Такой логин уже существует")
+            elif password2 != password:
+                QMessageBox.about(self, "Ошибка", "Пароли не совпадают")
+            elif errors_2:
+                QMessageBox.about(self, "Ошибка", "В фамилии, имени или отчестве присутствуют запрещенные символы")
+            else:
+                errors = False
 
-        if errors is False:
-            name = f"{last_name} {first_name} {third_name}"
-            total = (name, login, password, self.job)
-            self.cur.execute("INSERT INTO teachers(name, login, password, job)"
-                             "VALUES(?, ?, ?, ?);", total)
-            self.conn.commit()
+            if errors is False:
+                name = f"{last_name} {first_name} {third_name}"
+                total = (name, login, password, self.job)
+                self.cur.execute("INSERT INTO teachers(name, login, password, job)"
+                                 "VALUES(?, ?, ?, ?);", total)
+                self.conn.commit()
 
-            self.lineEdit_firstname.setText('')
-            self.lineEdit_lastname.setText('')
-            self.lineEdit_thirdname.setText('')
-            self.lineEdit_login.setText('')
-            self.lineEdit_password.setText('')
-            self.lineEdit_password2.setText('')
+                self.lineEdit_firstname.setText('')
+                self.lineEdit_lastname.setText('')
+                self.lineEdit_thirdname.setText('')
+                self.lineEdit_login.setText('')
+                self.lineEdit_password.setText('')
+                self.lineEdit_password2.setText('')
+        except Exception:
+            QMessageBox.about(self, "Ошибка", "Извините, возможно произошла ошибка")
 
     def back(self):
-        self.open = sign.Sign()
-        self.open.show()
-        self.close()
+        try:
+            self.open = sign.Sign()
+            self.open.show()
+            self.close()
+        except Exception:
+            QMessageBox.about(self, "Ошибка", "Извините, возможно произошла ошибка")
 
 
 if __name__ == '__main__':

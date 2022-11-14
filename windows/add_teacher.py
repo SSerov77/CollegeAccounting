@@ -19,18 +19,35 @@ class AddTeacher(QMainWindow, Ui_Add_teacher):
             self.conn = sqlite3.connect('database/database.db')
             self.cur = self.conn.cursor()
 
+            self.bad_simbols = ['"', "'", '/', ';', ':', '&', '?', '!', '@', '#', '№', '$', '%', '^', '*', '(', ')',
+                                '[',
+                                ']', '{', '}', '>', '<', '`', '~', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+                                '=', '+', '-', '_']
+
         except Exception:
-            QMessageBox.about(self, "Ошибка", "Произошла ошибка!")
+            QMessageBox.about(self, "Ошибка", "Извините, возможно произошла ошибка")
 
     def to_add(self):
-        name = self.lineEdit.text()
+        try:
+            name = self.lineEdit.text()
+            not_error = True
 
-        total = [name]
+            for i in name:
+                if i in self.bad_simbols:
+                    error = False
 
-        self.cur.execute("INSERT INTO teachers(name) VALUES(?);", total)
-        self.conn.commit()
+            if not_error:
 
-        self.lineEdit.setText('')
+                total = [name]
+
+                self.cur.execute("INSERT INTO teachers(name) VALUES(?);", total)
+                self.conn.commit()
+
+                self.lineEdit.setText('')
+            else:
+                QMessageBox.about(self, "Ошибка", "Неправильно заполнена анкета, введены запрещенные символы")
+        except Exception:
+            QMessageBox.about(self, "Ошибка", "Извините, возможно произошла ошибка")
 
 
 if __name__ == '__main__':
