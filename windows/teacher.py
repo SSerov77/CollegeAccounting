@@ -14,7 +14,7 @@ class Teacher(QMainWindow, Ui_TeacherWindow):
         self.setupUi(self)
         self.name = name
 
-        self.label.setText(str(name[0]))
+        self.label.setText(str(name))
         self.pushButton.setStyleSheet("background-color: #30AB0D")
         self.tabWidget.currentChanged.connect(self.db)
         self.pushButton_back.clicked.connect(self.back)

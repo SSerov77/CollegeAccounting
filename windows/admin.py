@@ -15,15 +15,25 @@ class Admin(QMainWindow, Ui_Admin):
 
             self.conn = sqlite3.connect('database/database.db')
             self.cur = self.conn.cursor()
-
+            self.errors_job = True
+            self.job = ''
+            self.radioButton_teacher.toggled.connect(self.jober)
+            self.radioButton_head_teacher.toggled.connect(self.jober)
             self.pushButton.clicked.connect(self.registration)
             self.pushButton_back.clicked.connect(self.back)
             self.bad_simbols = ['"', "'", '/', ';', ':', '&', '?', '!', '@', '#', '№', '$', '%', '^', '*', '(', ')',
                                 '[',
-                                ']', '{', '}', '>', '<', '`', '~', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '=', '+', '-', '_']
+                                ']', '{', '}', '>', '<', '`', '~', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+                                '=', '+', '-', '_']
 
         except Exception:
             QMessageBox.about(self, "Ошибка", "Произошла ошибка!")
+
+    def jober(self):
+        radioBtn = self.sender()
+        self.job = radioBtn.text()
+        print(self.job)
+        self.errors_job = False
 
     def registration(self):
         logins = []
@@ -50,8 +60,10 @@ class Admin(QMainWindow, Ui_Admin):
         for i in result:
             logins.append(i[0])
 
-        if first_name == '' or last_name == '' or third_name == '' or login == '' or password == '' or password2 == '':
+        print(self.errors_job)
+        if first_name == '' or last_name == '' or third_name == '' or login == '' or password == '' or password2 == '' or self.errors_job:
             QMessageBox.about(self, "Ошибка", "Вы заполнили не все поля")
+
         elif (login in logins) or login == 'admin':
             QMessageBox.about(self, "Ошибка", "Такой логин уже существует")
         elif password2 != password:
@@ -63,9 +75,9 @@ class Admin(QMainWindow, Ui_Admin):
 
         if errors is False:
             name = f"{last_name} {first_name} {third_name}"
-            total = (name, login, password)
-            self.cur.execute("INSERT INTO teachers(name, login, password)"
-                             "VALUES(?, ?, ?);", total)
+            total = (name, login, password, self.job)
+            self.cur.execute("INSERT INTO teachers(name, login, password, job)"
+                             "VALUES(?, ?, ?, ?);", total)
             self.conn.commit()
 
             self.lineEdit_firstname.setText('')

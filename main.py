@@ -16,7 +16,7 @@ class Window(QMainWindow, Ui_Login):
             self.enter_to_account.clicked.connect(self.sign_in)
 
         except Exception:
-            QMessageBox.about(self, "Ошибка", "Произошла ошибка!")
+            QMessageBox.about(self, "Ошибка", "Извините, возможно произошла ошибка")
 
     def sign_in(self):
         try:
@@ -24,7 +24,7 @@ class Window(QMainWindow, Ui_Login):
             self.open.show()
             self.close()
         except Exception:
-            QMessageBox.about(self, "Ошибка", "Произошла ошибка!")
+            QMessageBox.about(self, "Ошибка", "Извините, возможно произошла ошибка")
 
 
 if __name__ == '__main__':

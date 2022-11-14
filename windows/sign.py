@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QApplication, QMessageBox, QMainWindow
 from ui_py_files.SignWindow import Ui_Sign
 from windows import admin
 from windows import teacher
+from windows import head_teacher
 
 
 class Sign(QMainWindow, Ui_Sign):
@@ -38,16 +39,18 @@ class Sign(QMainWindow, Ui_Sign):
                     results_login_passw.append(i)
                 total = (login, password)
                 if total in results_login_passw:
-                    name = self.cur.execute(f"SELECT name FROM teachers WHERE login='{login}'").fetchall()[0]
-                    self.open = teacher.Teacher(name)
+                    name = self.cur.execute(f"SELECT name, job FROM teachers WHERE login='{login}'").fetchall()[0]
+
+                    if name[1] == 'Преподаватель':
+                        self.open = teacher.Teacher(name[0])
+                    elif name[1] == 'Завуч':
+                        self.open = head_teacher.HeadTeacher(name[0])
                     self.open.show()
-                    self.show()
                     self.close()
                 else:
                     QMessageBox.about(self, "Ошибка", "Введен неправильно логин или пароль")
         else:
             QMessageBox.about(self, "Ошибка", "Введите логин или пароль")
-
 
 
 if __name__ == '__main__':
